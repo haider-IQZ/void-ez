@@ -23,6 +23,20 @@ if [ ! -d /sys/firmware/efi ]; then
     exit 1
 fi
 
+# Check and install host dependencies (needed for partitioning/formatting)
+echo "Checking for host dependencies..."
+MISSING_DEPS=""
+command -v sgdisk >/dev/null || MISSING_DEPS="$MISSING_DEPS gptfdisk"
+command -v partprobe >/dev/null || MISSING_DEPS="$MISSING_DEPS parted"
+command -v mkfs.fat >/dev/null || MISSING_DEPS="$MISSING_DEPS dosfstools"
+command -v mkfs.ext4 >/dev/null || MISSING_DEPS="$MISSING_DEPS e2fsprogs"
+command -v mkfs.btrfs >/dev/null || MISSING_DEPS="$MISSING_DEPS btrfs-progs"
+
+if [ -n "$MISSING_DEPS" ]; then
+    echo "Installing missing tools on live system:$MISSING_DEPS"
+    xbps-install -Sy $MISSING_DEPS
+fi
+
 echo "======================================"
 echo "System Configuration"
 echo "======================================"

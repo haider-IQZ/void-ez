@@ -49,6 +49,20 @@ By default, the script installs:
 
 ---
 
+## 🖥️ Wayland on NVIDIA
+If you are using a Wayland compositor (Niri, KDE Wayland, Hyprland), the script automatically enables `nvidia-drm.modeset=1`.
+
+However, you should add these environment variables to your `~/.bash_profile` or `~/.zprofile` to fix common issues:
+
+```bash
+export LIBVA_DRIVER_NAME=nvidia
+export XDG_SESSION_TYPE=wayland
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+export WLR_NO_HARDWARE_CURSORS=1
+```
+
+---
+
 ## ⚠️ Warning
 **This script will ERASE ALL DATA on the selected disk.** Use it at your own risk. It is designed for UEFI systems only.
 

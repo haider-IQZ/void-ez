@@ -304,11 +304,12 @@ echo "✓ Hostname set"
 
 echo "Creating user USERNAME_PLACEHOLDER..."
 useradd -m -G wheel,audio,video,storage -s /bin/bash USERNAME_PLACEHOLDER
-echo "USERNAME_PLACEHOLDER:PASSWORD_PLACEHOLDER" | chpasswd
+# Use a more robust pipe for password setting
+echo -e "PASSWORD_PLACEHOLDER\nPASSWORD_PLACEHOLDER" | passwd USERNAME_PLACEHOLDER
 echo "✓ User created"
 
 echo "Setting root password..."
-echo "root:PASSWORD_PLACEHOLDER" | chpasswd
+echo -e "PASSWORD_PLACEHOLDER\nPASSWORD_PLACEHOLDER" | passwd root
 echo "✓ Root password set"
 
 echo "Enabling sudo for wheel group..."
@@ -323,6 +324,8 @@ grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id="Void
 echo "✓ GRUB installed"
 
 echo "Generating GRUB configuration..."
+# Enable NVIDIA modesetting for Wayland
+sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="nvidia-drm.modeset=1 /' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 echo "✓ GRUB configured"
 
